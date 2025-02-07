@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,30 +34,31 @@ public class Schedule {
     }
     
     public boolean validateSchedule() {
-        boolean valid = true;
-
         String[] recordPieces = schedule.get(0).split(",");
         for (String record : schedule) {
             // Check the record contains commas
             if (!record.contains(",")) {
-                valid = false;
-                break;
+                return false;
             }
 
             // Check the record follows the format
-            if (record.matches("^\\d+(,\\d+ @ \\d+)+$")) {
-                valid = false;
-                break;
+            String[] pieces = record.split(",");
+            if (!pieces[0].matches("\\d+")) {
+                return false;
+            }
+            for (int i = 1; i < pieces.length; i++) {
+                if (!pieces[i].matches("\\d+ @ \\d+")) {
+                    return false;
+                }
             }
             
             // Check that records are the same length
             if (record.split(",").length != recordPieces.length) {
-                valid = false;
-                break;
+                return false;
             }
         }
 
-        return valid;
+        return true;
     }
 
     public void processSchedule() {
