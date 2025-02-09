@@ -62,7 +62,7 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
         btnExportTableAssignment = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("BCA League Table Assignment");
+        setTitle("BCA League Table Assigner");
 
         pnCsvLeagueSchedule.setBorder(javax.swing.BorderFactory.createTitledBorder("CSV League Schedule"));
 
@@ -123,7 +123,7 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
         tblTableAssignment.setShowGrid(true);
         scrPnlTableAssignment.setViewportView(tblTableAssignment);
 
-        btnExportTableAssignment.setText("Export Table Assignment");
+        btnExportTableAssignment.setText("Export Table Assignments");
         btnExportTableAssignment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExportTableAssignmentActionPerformed(evt);
