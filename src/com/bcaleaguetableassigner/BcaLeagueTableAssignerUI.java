@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.prefs.Preferences;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -71,6 +72,14 @@ public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BCA League Table Assigner");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         pnLeagueScheduleFile.setBorder(javax.swing.BorderFactory.createTitledBorder("League Schedule File"));
 
@@ -273,6 +282,24 @@ public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnExportTableAssignmentActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        prefs.putInt("windowWidth", this.getWidth());
+        prefs.putInt("windowHeight", this.getHeight());
+        prefs.putInt("windowX", this.getX());
+        prefs.putInt("windowY", this.getY());
+    }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        int width = prefs.getInt("windowWidth", 800); // Default width
+        int height = prefs.getInt("windowHeight", 600); // Default height
+        int x = prefs.getInt("windowX", 100); // Default X position
+        int y = prefs.getInt("windowY", 100); // Default Y position
+        this.setSize(width, height);
+        this.setLocation(x, y);
+    }//GEN-LAST:event_formWindowOpened
 
     private void autoResizeColumns(JTable table) {
         for (int column = 0; column < table.getColumnCount(); column++) {
