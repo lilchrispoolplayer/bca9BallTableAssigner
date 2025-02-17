@@ -303,7 +303,7 @@ public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(csvFilter);
   
-        return fileChooser.showOpenDialog(this);
+        return fileChooser.showSaveDialog(this);
     }
     
     private void replaceTeamNumbersWithNames(Map<String, String> teamNames, DefaultTableModel model) {
