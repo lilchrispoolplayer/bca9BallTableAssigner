@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.bca9balltableassigner;
+package com.bcaleaguetableassigner;
 
 import java.awt.Component;
 import java.awt.HeadlessException;
@@ -28,7 +28,7 @@ import javax.swing.table.TableModel;
  *
  * @author c_dra
  */
-public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
+public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
 
     private static File lastDirectory = new File(System.getProperty("user.home")); // Default to user's home directory
     private JFileChooser fileChooser;
@@ -38,7 +38,7 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
     /**
      * Creates new form Bca9BallTableAssignerUI
      */
-    public Bca9BallTableAssignerUI() {
+    public BcaLeagueTableAssignerUI() {
         initComponents();
         try {
             File jarFile = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -340,19 +340,20 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Bca9BallTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BcaLeagueTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Bca9BallTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BcaLeagueTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Bca9BallTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BcaLeagueTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Bca9BallTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BcaLeagueTableAssignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new Bca9BallTableAssignerUI().setVisible(true);
+            new BcaLeagueTableAssignerUI().setVisible(true);
         });
     }
 
