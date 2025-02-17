@@ -33,13 +33,13 @@ public class TableAssigner {
 
     public TableAssigner(Schedule schedule) {
         rng = new Random(System.currentTimeMillis());
-
         this.schedule = schedule;
-
         numberOfMatches = schedule.getAllScheduledRecords()
-                .stream()
-                .max(Comparator.comparingInt(ScheduleRecord::getLeagueMatchesCount)).get().getLeagueMatchesCount();
-        tableDistributionLimit = BigDecimal.valueOf(schedule.getNumberOfWeeksInSchedule() / (double) numberOfMatches).setScale(0, RoundingMode.UP).intValue();
+            .stream()
+            .max(Comparator.comparingInt(ScheduleRecord::getLeagueMatchesCount)).get().getLeagueMatchesCount();
+        tableDistributionLimit = BigDecimal.valueOf(
+                schedule.getNumberOfWeeksInSchedule() / (double) numberOfMatches).setScale(0, RoundingMode.UP)
+            .intValue();
 
         initializeLeagueTeams();
         initializeTableAssignments();
@@ -77,16 +77,28 @@ public class TableAssigner {
                     .boxed()
                     .collect(Collectors.toList());
             List<LeagueMatch> matches = sr.getAllLeagueMatches();
-            tableAssignments.setValueAt(sr.getLeagueWeek(), sr.getLeagueWeek() - 1, 0);
+            tableAssignments.setValueAt(String.format("%"+String.valueOf(schedule.getNumberOfWeeksInSchedule()).length() + "s", sr.getLeagueWeek()), 
+                    sr.getLeagueWeek() - 1, 0);
             for (int i = 0; i < matches.size(); i++) {
                 LeagueMatch lm = matches.get(i);
                 LeagueTeam awayTeam = teams.stream().filter(t -> t.getId() == lm.getAwayTeam()).findFirst().get();
                 LeagueTeam homeTeam = teams.stream().filter(t -> t.getId() == lm.getHomeTeam()).findFirst().get();
 
                 Map<Integer, Integer> weights = new HashMap<>();
-                availableTables.stream().forEach(table ->
-                    weights.put(table, awayTeam.getTableWeight(table) + homeTeam.getTableWeight(table)));
+                for (int table : availableTables) {
+                    weights.put(table, awayTeam.getTableWeight(table) + homeTeam.getTableWeight(table));
+                }
 
+                weights = weights.entrySet().stream()
+                        .filter(w -> w.getValue() <= tableDistributionLimit)
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                
+                if (weights.isEmpty()) {
+                    for (int table : availableTables) {
+                        weights.put(table, awayTeam.getTableWeight(table) + homeTeam.getTableWeight(table));
+                    }
+                }
+                
                 int lowestWeight = Collections.min(weights.values());
                 List<Integer> lowestTables = weights.entrySet().stream()
                         .filter(x -> x.getValue() == lowestWeight)

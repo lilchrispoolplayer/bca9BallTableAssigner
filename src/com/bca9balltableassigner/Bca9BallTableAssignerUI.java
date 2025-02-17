@@ -12,11 +12,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -28,6 +32,8 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
 
     private static File lastDirectory = new File(System.getProperty("user.home")); // Default to user's home directory
     private JFileChooser fileChooser;
+    private FileNameExtensionFilter excelFilter;
+    private FileNameExtensionFilter csvFilter;
 
     /**
      * Creates new form Bca9BallTableAssignerUI
@@ -35,10 +41,11 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
     public Bca9BallTableAssignerUI() {
         initComponents();
         try {
-            fileChooser = new JFileChooser();
             File jarFile = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
             File jarDirectory = jarFile.getParentFile();
-            fileChooser.setCurrentDirectory(jarDirectory);
+            lastDirectory = jarDirectory;
+            csvFilter = new FileNameExtensionFilter("CSV File", "csv");
+            excelFilter = new FileNameExtensionFilter("Excel File", "xls", "xlsx");
         } catch (URISyntaxException use) {
 
         }
@@ -53,9 +60,9 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnCsvLeagueSchedule = new javax.swing.JPanel();
-        txtCsvLeagueSchedule = new javax.swing.JTextField();
-        btnBrowseCsvLeagueSchedule = new javax.swing.JButton();
+        pnLeagueScheduleFile = new javax.swing.JPanel();
+        txtLeagueScheduleFile = new javax.swing.JTextField();
+        btnBrowseLeagueScheduleFile = new javax.swing.JButton();
         btnGenerateTableAssignments = new javax.swing.JButton();
         scrPnlTableAssignment = new javax.swing.JScrollPane();
         tblTableAssignment = new javax.swing.JTable();
@@ -64,35 +71,35 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BCA League Table Assigner");
 
-        pnCsvLeagueSchedule.setBorder(javax.swing.BorderFactory.createTitledBorder("CSV League Schedule"));
+        pnLeagueScheduleFile.setBorder(javax.swing.BorderFactory.createTitledBorder("League Schedule File"));
 
-        txtCsvLeagueSchedule.setEditable(false);
+        txtLeagueScheduleFile.setEditable(false);
 
-        btnBrowseCsvLeagueSchedule.setText("Browse");
-        btnBrowseCsvLeagueSchedule.addActionListener(new java.awt.event.ActionListener() {
+        btnBrowseLeagueScheduleFile.setText("Browse");
+        btnBrowseLeagueScheduleFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBrowseCsvLeagueScheduleActionPerformed(evt);
+                btnBrowseLeagueScheduleFileActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout pnCsvLeagueScheduleLayout = new javax.swing.GroupLayout(pnCsvLeagueSchedule);
-        pnCsvLeagueSchedule.setLayout(pnCsvLeagueScheduleLayout);
-        pnCsvLeagueScheduleLayout.setHorizontalGroup(
-            pnCsvLeagueScheduleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnCsvLeagueScheduleLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnLeagueScheduleFileLayout = new javax.swing.GroupLayout(pnLeagueScheduleFile);
+        pnLeagueScheduleFile.setLayout(pnLeagueScheduleFileLayout);
+        pnLeagueScheduleFileLayout.setHorizontalGroup(
+            pnLeagueScheduleFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnLeagueScheduleFileLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtCsvLeagueSchedule)
+                .addComponent(txtLeagueScheduleFile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBrowseCsvLeagueSchedule)
+                .addComponent(btnBrowseLeagueScheduleFile)
                 .addContainerGap())
         );
-        pnCsvLeagueScheduleLayout.setVerticalGroup(
-            pnCsvLeagueScheduleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnCsvLeagueScheduleLayout.createSequentialGroup()
+        pnLeagueScheduleFileLayout.setVerticalGroup(
+            pnLeagueScheduleFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnLeagueScheduleFileLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnCsvLeagueScheduleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCsvLeagueSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBrowseCsvLeagueSchedule))
+                .addGroup(pnLeagueScheduleFileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtLeagueScheduleFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBrowseLeagueScheduleFile))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -120,6 +127,7 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tblTableAssignment.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         tblTableAssignment.setShowGrid(true);
         scrPnlTableAssignment.setViewportView(tblTableAssignment);
 
@@ -138,7 +146,7 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scrPnlTableAssignment, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
-                    .addComponent(pnCsvLeagueSchedule, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnLeagueScheduleFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnExportTableAssignment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGenerateTableAssignments, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -147,7 +155,7 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnCsvLeagueSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnLeagueScheduleFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerateTableAssignments)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -160,41 +168,41 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBrowseCsvLeagueScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseCsvLeagueScheduleActionPerformed
-        fileChooser.setDialogTitle("Select League CSV To Load");
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV File", "csv");
-        fileChooser.setFileFilter(filter);
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            txtCsvLeagueSchedule.setText(fileChooser.getSelectedFile().getAbsolutePath());
+    private void btnBrowseLeagueScheduleFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseLeagueScheduleFileActionPerformed
+        if (openBrowseLeagueScheduleDialog() == JFileChooser.APPROVE_OPTION) {
+            txtLeagueScheduleFile.setText(fileChooser.getSelectedFile().getAbsolutePath());
             lastDirectory = fileChooser.getSelectedFile().getParentFile();
         }
-    }//GEN-LAST:event_btnBrowseCsvLeagueScheduleActionPerformed
+    }//GEN-LAST:event_btnBrowseLeagueScheduleFileActionPerformed
 
     private void btnGenerateTableAssignmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateTableAssignmentsActionPerformed
-        if (txtCsvLeagueSchedule.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Select a CSV League Schedule", "Information", JOptionPane.INFORMATION_MESSAGE);
-            btnBrowseCsvLeagueSchedule.requestFocusInWindow();
+        if (txtLeagueScheduleFile.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Select a League Schedule", "Information", JOptionPane.INFORMATION_MESSAGE);
+            btnBrowseLeagueScheduleFile.requestFocusInWindow();
             return;
         }
 
-        Schedule leagueSchedule = new Schedule(txtCsvLeagueSchedule.getText());
+        String scheduleFile = txtLeagueScheduleFile.getText();
+        Schedule leagueSchedule = new Schedule(scheduleFile);
         if (!leagueSchedule.validateSchedule()) {
             JOptionPane.showMessageDialog(this,
                     String.format("""
                                   %s\r
-                                  is not a valid CSV League Schedule.\r\n
-                                  The expected format is:\r\n
-                                  #,# @ #,# @ #,etc...
+                                  is not a valid league schedule.
                                   """,
-                            txtCsvLeagueSchedule.getText()),
+                            txtLeagueScheduleFile.getText()),
                     "Information", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
         leagueSchedule.processSchedule();
         TableAssigner tableAssigner = new TableAssigner(leagueSchedule);
-        tblTableAssignment.setModel(tableAssigner.getTableAssignments());
+        
+        DefaultTableModel model = tableAssigner.getTableAssignments();
+        if (scheduleFile.endsWith(".xls") || scheduleFile.endsWith(".xlsx")) {
+            replaceTeamNumbersWithNames(leagueSchedule.getTeamNames(), model);
+        }
+        tblTableAssignment.setModel(model);
         tblTableAssignment.getTableHeader().setDefaultRenderer(new TableHeaderBorderRenderer());
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -277,12 +285,42 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
         }
     }
 
-    private int openExportTableAssignmentsDialog() {
-        fileChooser.setDialogTitle("Export Table Assignments");
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV File", "csv");
+    private int openBrowseLeagueScheduleDialog() {
+        fileChooser = new JFileChooser();    
+        fileChooser.setDialogTitle("Select League CSV To Load");
         fileChooser.setCurrentDirectory(lastDirectory);
-        fileChooser.setFileFilter(filter);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(excelFilter);
+        fileChooser.addChoosableFileFilter(csvFilter);
+        
         return fileChooser.showOpenDialog(this);
+    }
+    
+    private int openExportTableAssignmentsDialog() {
+        fileChooser = new JFileChooser();    
+        fileChooser.setDialogTitle("Export Table Assignments");
+        fileChooser.setCurrentDirectory(lastDirectory);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(csvFilter);
+  
+        return fileChooser.showOpenDialog(this);
+    }
+    
+    private void replaceTeamNumbersWithNames(Map<String, String> teamNames, DefaultTableModel model) {
+        int longestTeamNameLength = teamNames.values().stream().max(Comparator.comparingInt(String::length)).get().length();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                if (!model.getValueAt(i, j).toString().contains("@")) {
+                    continue;
+                }
+                
+                String leagueMatch = model.getValueAt(i, j).toString().trim();
+                String[] teamNumbers = leagueMatch.split(" @ ");
+                leagueMatch = String.format("%" + longestTeamNameLength + "s @ %-" + longestTeamNameLength 
+                        + "s", teamNames.get(teamNumbers[0]), teamNames.get(teamNumbers[1]));
+                model.setValueAt(leagueMatch, i, j);
+            }
+        }
     }
 
     /**
@@ -319,12 +357,12 @@ public class Bca9BallTableAssignerUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBrowseCsvLeagueSchedule;
+    private javax.swing.JButton btnBrowseLeagueScheduleFile;
     private javax.swing.JButton btnExportTableAssignment;
     private javax.swing.JButton btnGenerateTableAssignments;
-    private javax.swing.JPanel pnCsvLeagueSchedule;
+    private javax.swing.JPanel pnLeagueScheduleFile;
     private javax.swing.JScrollPane scrPnlTableAssignment;
     private javax.swing.JTable tblTableAssignment;
-    private javax.swing.JTextField txtCsvLeagueSchedule;
+    private javax.swing.JTextField txtLeagueScheduleFile;
     // End of variables declaration//GEN-END:variables
 }

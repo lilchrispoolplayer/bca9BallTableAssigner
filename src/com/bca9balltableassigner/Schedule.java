@@ -4,12 +4,9 @@
  */
 package com.bca9balltableassigner;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -17,53 +14,41 @@ import java.util.List;
  */
 public class Schedule {
 
-    private List<String> schedule;
+    private final String scheduleFile;
     private List<ScheduleRecord> scheduleRecords;
+    private CsvReader csvReader;
+    private ExcelReader excelReader;
 
-    public Schedule(String scheduleFile) {
-        loadSchedule(scheduleFile);
-    }
-
-    private void loadSchedule(String scheduleFile) {
-        try {
-            // File must be in CSV format
-            schedule = Files.readAllLines(Paths.get(scheduleFile));
-        } catch (IOException ioe) {
-
+    public Schedule(String file) {
+        scheduleFile = file;
+        if (scheduleFile.endsWith(".csv")) {
+            csvReader = new CsvReader();
+            csvReader.loadSchedule(scheduleFile);
+        } else if (scheduleFile.endsWith(".xls") || scheduleFile.endsWith(".xlsx")) {
+            excelReader = new ExcelReader();
+            excelReader.loadSchedule(scheduleFile);
         }
-    }
-    
-    public boolean validateSchedule() {
-        String[] recordPieces = schedule.get(0).split(",");
-        for (String record : schedule) {
-            // Check the record contains commas
-            if (!record.contains(",")) {
-                return false;
-            }
-
-            // Check the record follows the format
-            String[] pieces = record.split(",");
-            if (!pieces[0].matches("\\d+")) {
-                return false;
-            }
-            for (int i = 1; i < pieces.length; i++) {
-                if (!pieces[i].matches("\\d+ @ \\d+")) {
-                    return false;
-                }
-            }
-            
-            // Check that records are the same length
-            if (record.split(",").length != recordPieces.length) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public void processSchedule() {
         scheduleRecords = new ArrayList<>();
-        schedule.stream().forEach(record -> scheduleRecords.add(new ScheduleRecord(record, schedule.size())));
+        
+        if (scheduleFile.endsWith(".csv")) {
+            List<String> schedule = csvReader.getSchedule();
+            schedule.stream().forEach(record -> scheduleRecords.add(new ScheduleRecord(record, schedule.size())));
+        } else if (scheduleFile.endsWith(".xls") || scheduleFile.endsWith(".xlsx")) {
+            List<String> schedule = excelReader.getSchedule();
+            schedule.stream().forEach(record -> scheduleRecords.add(new ScheduleRecord(record, schedule.size())));
+        }
+    }
+    
+    public boolean validateSchedule() {
+        boolean valid = true;
+        if (scheduleFile.endsWith(".csv")) {
+            valid = csvReader.validateSchedule();
+        }
+        
+        return valid;
     }
 
     public ScheduleRecord getScheduledRecord(int index) {
@@ -80,5 +65,9 @@ public class Schedule {
 
     public int getNumberOfWeeksInSchedule() {
         return scheduleRecords.size();
+    }
+    
+    public Map<String, String> getTeamNames() {
+        return excelReader.getTeamNames();
     }
 }
