@@ -29,6 +29,7 @@ public class TableAssigner {
     private final int tableDistributionLimit;
 
     private List<LeagueTeam> teams;
+    private Map<String, String> byeTeams;
     private DefaultTableModel tableAssignments;
 
     public TableAssigner(Schedule schedule) {
@@ -40,7 +41,7 @@ public class TableAssigner {
         tableDistributionLimit = BigDecimal.valueOf(
                 schedule.getNumberOfWeeksInSchedule() / (double) numberOfMatches).setScale(0, RoundingMode.UP)
             .intValue();
-
+        
         initializeLeagueTeams();
         initializeTableAssignments();
         assignTablesV1();
@@ -55,16 +56,18 @@ public class TableAssigner {
         for (int i = 1; i <= numberOfMatches * 2; i++) {
             teams.add(new LeagueTeam(i, numberOfMatches));
         }
+        
+        byeTeams = schedule.getByeTeams();
     }
 
     private void initializeTableAssignments() {
         int tableNumber = 1;
         tableAssignments = new DefaultTableModel();
         tableAssignments.addColumn("Week");
-        for (int i = 1; i <= numberOfMatches; i++) {
+        for (int i = 0; i < numberOfMatches; i++) {
             tableAssignments.addColumn(String.format("%s", tableNumber++));
         }
-
+        
         for (int i = 1; i <= schedule.getNumberOfWeeksInSchedule(); i++) {
             tableAssignments.addRow(new String[numberOfMatches]);
         }
@@ -73,17 +76,25 @@ public class TableAssigner {
     private void assignTablesV1() {
         schedule.getAllScheduledRecords().stream().forEach(sr ->
         {
-            List<Integer> availableTables = IntStream.rangeClosed(1, numberOfMatches)
-                    .boxed()
-                    .collect(Collectors.toList());
-            List<LeagueMatch> matches = sr.getAllLeagueMatches();
             tableAssignments.setValueAt(String.format("%"+String.valueOf(schedule.getNumberOfWeeksInSchedule()).length() + "s", sr.getLeagueWeek()), 
                     sr.getLeagueWeek() - 1, 0);
-            for (int i = 0; i < matches.size(); i++) {
-                LeagueMatch lm = matches.get(i);
+            
+            List<LeagueMatch> matches = sr.getAllLeagueMatches();
+            List<LeagueMatch> actualMatches = matches.stream().filter(lm -> !byeTeams.containsKey(String.valueOf(lm.getAwayTeam())) &&
+                    !byeTeams.containsKey(String.valueOf(lm.getHomeTeam()))).toList();
+            List<LeagueMatch> byeMatches = matches.stream().filter(lm -> byeTeams.containsKey(String.valueOf(lm.getAwayTeam())) ||
+                    byeTeams.containsKey(String.valueOf(lm.getHomeTeam()))).toList();
+            
+            List<Integer> availableTables = IntStream.rangeClosed(1, actualMatches.size())
+                    .boxed()
+                    .collect(Collectors.toList());
+                        
+            // Assign actual matches first
+            for (int i = 0; i < actualMatches.size(); i++) {
+                LeagueMatch lm = actualMatches.get(i);
                 LeagueTeam awayTeam = teams.stream().filter(t -> t.getId() == lm.getAwayTeam()).findFirst().get();
                 LeagueTeam homeTeam = teams.stream().filter(t -> t.getId() == lm.getHomeTeam()).findFirst().get();
-
+                
                 Map<Integer, Integer> weights = new HashMap<>();
                 for (int table : availableTables) {
                     weights.put(table, awayTeam.getTableWeight(table) + homeTeam.getTableWeight(table));
@@ -111,6 +122,16 @@ public class TableAssigner {
                 awayTeam.incrementTableWeight(chosenTable);
                 homeTeam.incrementTableWeight(chosenTable);
                 availableTables.remove(availableTables.indexOf(chosenTable));
+            }
+            
+            // Assign BYE matches in the right most available cells of the current week
+            for (int i = 0; i < byeMatches.size(); i++) {
+                for (int j = 0; j < tableAssignments.getColumnCount(); j++) {
+                    if (tableAssignments.getValueAt(sr.getLeagueWeek() - 1, j) == null) {
+                        tableAssignments.setValueAt(byeMatches.get(i).getLeagueMatch(), sr.getLeagueWeek() - 1, j);
+                        break;
+                    }
+                }
             }
         });
     }

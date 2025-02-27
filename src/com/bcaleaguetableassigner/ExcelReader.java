@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -35,7 +36,7 @@ public class ExcelReader {
 
     public void loadSchedule(String scheduleFile) {
         try (FileInputStream fileInputStream = new FileInputStream(new File(scheduleFile))) {
-            workbook = new XSSFWorkbook(fileInputStream);
+            workbook = WorkbookFactory.create(fileInputStream);
             teamNames = new HashMap<>();
             for(Row row : workbook.getSheetAt(1)) {
                 teamNames.put(String.valueOf((int)row.getCell(0).getNumericCellValue()), row.getCell(1).getStringCellValue());

@@ -7,6 +7,7 @@ package com.bcaleaguetableassigner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -69,5 +70,13 @@ public class Schedule {
     
     public Map<String, String> getTeamNames() {
         return excelReader.getTeamNames();
+    }
+      
+    public Map<String, String> getByeTeams() {
+        return excelReader.getTeamNames()
+                .entrySet()
+                .stream()
+                .filter(team -> team.getValue().matches("^BYE\\d+.*"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

@@ -209,9 +209,7 @@ public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
         TableAssigner tableAssigner = new TableAssigner(leagueSchedule);
         
         DefaultTableModel model = tableAssigner.getTableAssignments();
-        if (scheduleFile.endsWith(".xls") || scheduleFile.endsWith(".xlsx")) {
-            replaceTeamNumbersWithNames(leagueSchedule.getTeamNames(), model);
-        }
+        replaceTeamNumbersWithNames(leagueSchedule.getTeamNames(), model);
         tblTableAssignment.setModel(model);
         tblTableAssignment.getTableHeader().setDefaultRenderer(new TableHeaderBorderRenderer());
 
@@ -319,7 +317,6 @@ public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
         fileChooser.setCurrentDirectory(lastDirectory);
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.addChoosableFileFilter(excelFilter);
-        fileChooser.addChoosableFileFilter(csvFilter);
         
         return fileChooser.showOpenDialog(this);
     }
@@ -338,14 +335,25 @@ public class BcaLeagueTableAssignerUI extends javax.swing.JFrame {
         int longestTeamNameLength = teamNames.values().stream().max(Comparator.comparingInt(String::length)).get().length();
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < model.getColumnCount(); j++) {
-                if (!model.getValueAt(i, j).toString().contains("@")) {
+                if (model.getValueAt(i, j) == null ||
+                    (model.getValueAt(i, j) != null &&
+                    !model.getValueAt(i, j).toString().contains("@"))) {
                     continue;
                 }
                 
                 String leagueMatch = model.getValueAt(i, j).toString().trim();
                 String[] teamNumbers = leagueMatch.split(" @ ");
-                leagueMatch = String.format("%" + longestTeamNameLength + "s @ %-" + longestTeamNameLength 
-                        + "s", teamNames.get(teamNumbers[0]), teamNames.get(teamNumbers[1]));
+                String awayTeamName = teamNames.get(teamNumbers[0]);
+                String homeTeamName = teamNames.get(teamNumbers[1]);
+                
+                if (homeTeamName.matches("^BYE\\d+.*")) {
+                    leagueMatch = String.format("%" + longestTeamNameLength + "s @ %-" + longestTeamNameLength 
+                        + "s", homeTeamName, awayTeamName);
+                } else {
+                    leagueMatch = String.format("%" + longestTeamNameLength + "s @ %-" + longestTeamNameLength 
+                        + "s", awayTeamName, homeTeamName);
+                }
+                
                 model.setValueAt(leagueMatch, i, j);
             }
         }
