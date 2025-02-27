@@ -12,24 +12,28 @@ From the Finder window, browse to the folder containing the bca9BallTableAssigne
 From the Terminal window, type the command "java -jar bca9BallTableAssigner.jar"<br/><br/>
 
 <h1>How To Use</h1>
-This program is designed to take a Comma Separated Value (CSV) formatted file of a Billiards Congress of America (BCA) league schedule as input, then generate a CSV formatted file with each weekly team matchup assigned to table(s).<br/>
-Typically, the league schedule is an Excel spreadsheet (*.xlsx) with two tabs: Schedule & Teams.  The Schedule tab must be saved off as a separate CSV file.<br/>
+This program is designed to take an Excel Spreadsheet (.xls or .xlsx) formatted file of a Billiards Congress of America (BCA) league schedule as input, then generate a CSV formatted file with each weekly team matchup assigned to table(s).<br/><br/>
 
-![bca9BallTableAssigner](https://github.com/user-attachments/assets/c7a063d8-60f1-428b-86f4-a5d67929cd4c)<br/><br/>
+![image](https://github.com/user-attachments/assets/9057fa21-4b47-4e65-b2f1-1779d4b0031a)<br/><br/>
 
-Load the CSV league schedule by clicking the <b>Browse</b> button<br/>
+Load the league schedule by clicking the <b>Browse</b> button<br/>
 
-![bca9BallTableAssigner_LoadLeagueSchedule](https://github.com/user-attachments/assets/3e66f965-79c3-4737-89d6-c9504811464e)<br/><br/>
+![image](https://github.com/user-attachments/assets/35933e21-1a1b-4f7f-a64e-6b6040223c54)<br/><br/>
 
 Click on the <b>Generate Table Assignments</b> button and verify that the generated table assignments are acceptable.<br/>
 If the table assignments are not acceptable, continue to click the <b>Generate Table Assignments</b> button.
 
-![bca9BallTableAssigner_GenerateTableAssignments](https://github.com/user-attachments/assets/d199c034-ce1e-4f43-a01e-a39ea6200464)<br/><br/>
+![image](https://github.com/user-attachments/assets/d8a3a7a4-3266-4d16-acee-62209ec69ce5)<br/><br/>
+
+If there are BYE teams in your session, the team name for them must start with "BYE" followed by a number to uniquely identify them.  For example, if a session had 2 BYE teams they would be labeled BYE1 and BYE2.  Any teams playing a BYE team will be set to the right most column(s) of the assignment tables.
+
+![image](https://github.com/user-attachments/assets/d5ec445a-044f-452d-b18d-a71476851d72)<br/><br/>
 
 Once the generated table assignments are acceptable, then click the <b>Export Table Assignments</b> button and name the file<br/>
 
-![bca9BallTableAssigner_ExportTableAssignments](https://github.com/user-attachments/assets/e5f1e80c-d007-4422-b2fb-fec0100cd647)
-![bca9BallTableAssigner_ExportComplete](https://github.com/user-attachments/assets/dc8968b0-ee71-4535-add9-4b9b21cfe2c5)<br/><br/>
+![image](https://github.com/user-attachments/assets/4ac4d3c4-0293-446a-8edf-b7872941e4f7)
+![image](https://github.com/user-attachments/assets/adda43bc-9820-4f99-ad3d-40b7823af1ee)<br/><br/>
 
 Use the exported CSV Table Assignments where desired.<br/>
-![bca9BallTableAssigner_TableAssignments](https://github.com/user-attachments/assets/175d7797-bc9c-4b87-88fa-d4413e92e8b8)
+![image](https://github.com/user-attachments/assets/c40b7665-a092-45bc-bc1a-01a34785ea92)
+
